@@ -7,13 +7,26 @@
 	<title>Call Me Comic</title>
 
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-	<link href='http://fonts.googleapis.com/css?family=Roboto:300|Roboto+Condensed:700italic' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:300|Roboto+Condensed:700italic,300' rel='stylesheet' type='text/css'>
 	<style type="text/css">
 		.center{
 			text-align: center;
 		}
 		*{
 			font-family: "Roboto", sans-serif;
+		}
+		.gh{
+			position: absolute;
+			right: 20px;
+			top: 20px;
+			color: #CCC;
+		}
+		.gh, .gh a{
+			font-family: "Roboto Condensed", sans-serif;
+			font-weight: 300;
+		}
+		.gh a{
+			color: #AAA;
 		}
 		img{
 			width: 100%;
@@ -25,9 +38,11 @@
 			padding: 10px;
 			text-align: center;
 			font-style: italic;
-			font-family: "Roboto Condensed", sans-serif;
-			font-weight: bold;
+			font-weight: 700;
 			text-transform: uppercase;
+		}
+		.person, .forks, .person a{
+			font-family: "Roboto Condensed", sans-serif;
 		}
 		.forks{
 			font-size: 20px;
@@ -48,6 +63,9 @@
 		.container{
 			margin-bottom: 50px;
 		}
+		.fork-exp{
+			padding: 10px;
+		}
 	</style>
 </head>
 <body>
@@ -66,6 +84,10 @@
 		<img src="https://31.media.tumblr.com/342449d1f3aa6de4da00f5c856fb8f4e/tumblr_inline_n0r7rgJKvA1qlzc7k.png" />
 		<img src="https://31.media.tumblr.com/83b31fed511138ee2cc8135da066282a/tumblr_inline_n0r7roVc0E1qlzc7k.png" />
 		<img src="https://31.media.tumblr.com/7c5e9f171751645a7d8149f89eee4321/tumblr_inline_n0r7rtJhJT1qlzc7k.png" />
+	</div>
+	<div class="fork-exp center visible-xs visible-sm">
+		pick a username where they have picked up the story and continued it. different usernames have different
+		stories
 	</div>
 	<div class="forks center">
 		forks down
@@ -166,7 +188,34 @@
 
 <script type="text/javascript" src="//code.jquery.com/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
 <script type="text/javascript">
+function drawArrows(){
+	$(".row").each(function(){
+		var i = $("> .fork", this).length;
+
+		var arrowBox = $(".arrow-box", $(this).prev(".forks")).html("");
+
+		var w = arrowBox.width(), c = Math.ceil(w/2);
+		var arrows = new Raphael(arrowBox.get(0), w, 40);
+		var f = undefined, l = undefined;
+
+		arrows.path("M " + c + " 0 L " + c + " 15").attr({ "stroke" : "#CCC" });
+		for(var x = 0; x < i; x++){
+			// Add arrows
+			var p = Math.ceil( (w/i)*x + ((w/i)/2) );
+			if(f == undefined) f = p;
+			l = p;
+			arrows.path("M " + p + " 14 L " + p + " 35" ).attr({
+				"arrow-end" : "block-wide-long",
+				"stroke" : "#CCC"
+			});
+		}
+
+		arrows.path("M "+f+" 15 L " + p+ " 15").attr({ "stroke" : "#CCC" });
+	});
+}
+
 $(document).ready(function(){
 	$(".row").each(function(){
 		$("> .fork", this).addClass("hidden-sm hidden-xs");
@@ -175,11 +224,11 @@ $(document).ready(function(){
 		var forkList = $("<div>").addClass("list-of-forks visible-xs visible-sm").appendTo(forks);
 		$("<div>").text("Choose a fork").appendTo(forkList);
 
-		var i = 0;
+		i = 0;
 		$("> .fork", this).each(function(){
-			$(this).addClass("forkN"+i);
+			$(this).addClass("forkN"+window.i);
 			var whoisthis = $($(".person", this).get(0));
-			var cl = whoisthis.clone().data("fork", i).appendTo(forkList).click(function(){
+			var cl = whoisthis.clone().data("fork", window.i).appendTo(forkList).click(function(){
 				var row = $(this).parent().parent().next(".row");
 				console.log($("> .fork", row));
 				$("> .fork", row).addClass("hidden-sm hidden-xs");
@@ -189,10 +238,17 @@ $(document).ready(function(){
 
 			i+=1;
 		});
+
+		var arrowBox = $("<div>").addClass("arrow-box visible-md visible-lg").appendTo(forks);
 	});
+	drawArrows();
 	$(".container img").click(function(){
 		$("#modalImage").attr("src", $(this).attr("src"));
 		$("#previewModal").modal();
+	});
+
+	$(window).on("resize", function(){
+		drawArrows();
 	});
 });
 
@@ -208,6 +264,9 @@ ga('send', 'pageview');
 </script>
 <div class="footer">
 	This is a comic on tumblr.com that lots of people are making. This website is made by <a href="http://twitter.com/kennydude">kennydude</a>. You should message him anything to add to this page!
+</div>
+<div class="gh hidden-xs hidden-sm">
+	The source code to this page is on <a href="http://github.com/kennydude/callme-comic">github</a>
 </div>
 </body>
 </html>
