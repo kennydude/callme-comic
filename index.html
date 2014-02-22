@@ -66,6 +66,9 @@
 		.fork-exp{
 			padding: 10px;
 		}
+		body .tooSmall .arrow-box, #tooSmallBody .enlargeButton{
+			display: none !important;
+		}
 	</style>
 </head>
 <body>
@@ -126,11 +129,28 @@
 					<img src="images/CutieComic2.jpg" />
 					<img src="images/CutieComic3.jpg" />
 					<img src="images/CutieComic4.jpg" />
-					<div class="person"><a href="http://theartofwazzing.tumblr.com/post/76578024006/maria-ruta-bluetiesandflannelshirts">theartofwazzing</a></div>
-					<img src="https://31.media.tumblr.com/00d5223d040e2ccdcdacc263d3988f53/tumblr_inline_n0ymfzYhwR1qfdle3.png" />
-					<img src="https://31.media.tumblr.com/eead38a1577b1f003b607fa860af498a/tumblr_inline_n0ymgbGTyF1qfdle3.png" />
-					<img src="https://31.media.tumblr.com/56c2f9d2de2289b10d06c257b91f6861/tumblr_inline_n0ymggWbEW1qfdle3.png" />
-					<img src="https://31.media.tumblr.com/10992677314d53caf7d8705d79df65ae/tumblr_inline_n0ymgnqCS01qfdle3.png" />
+					<div class="forks tooSmall">
+						forks down
+					</div>
+					<div class="row">
+						<div class="col-md-4 fork">
+							<div class="person"><a href="http://theartofwazzing.tumblr.com/post/76578024006/maria-ruta-bluetiesandflannelshirts">theartofwazzing</a></div>
+							<img src="https://31.media.tumblr.com/00d5223d040e2ccdcdacc263d3988f53/tumblr_inline_n0ymfzYhwR1qfdle3.png" />
+							<img src="https://31.media.tumblr.com/eead38a1577b1f003b607fa860af498a/tumblr_inline_n0ymgbGTyF1qfdle3.png" />
+							<img src="https://31.media.tumblr.com/56c2f9d2de2289b10d06c257b91f6861/tumblr_inline_n0ymggWbEW1qfdle3.png" />
+							<img src="https://31.media.tumblr.com/10992677314d53caf7d8705d79df65ae/tumblr_inline_n0ymgnqCS01qfdle3.png" />
+						</div>
+						<div class="col-md-4 fork">
+							<div class="person"><a href="http://aoidaisy.tumblr.com/post/76620719613/delusionalforharmony-maria-ruta">aoidaisy</a></div>
+							<img src="http://25.media.tumblr.com/f6d0bd8124af227b0edd0707c348a07d/tumblr_n0zf72Xfdu1sll7meo1_1280.jpg" />
+							<img src="http://24.media.tumblr.com/83ac8bd3a2661df6dfa990cddc1dc609/tumblr_n0zf72Xfdu1sll7meo2_1280.jpg" />
+							<img src="http://24.media.tumblr.com/62eeef3a3e24e8045e3fe33f2ea262cd/tumblr_n0zf72Xfdu1sll7meo3_1280.jpg" />
+						</div>
+						<div class="col-md-4 fork">
+							<div class="person"><a href="http://soomishi.tumblr.com/post/76622397690/gehiahsa-maria-ruta">soomishi</a></div>
+							<img src="images/soomishi.jpg" />
+						</div>
+					</div>
 				</div>
 				<div class="col-md-6 fork">
 					<div class="person"><a href="http://theakumakuma.tumblr.com/post/76273865797/daitoshi-all-canadian-striderp-cheese3d">theakumakuma</a></div>
@@ -181,6 +201,22 @@
 	</div>
 </div>
 
+<div class="modal fade" id="tooSmallModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">View Fork</h4>
+			</div>
+		<div class="modal-body" id="tooSmallBody">
+			
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+		</div>
+	</div>
+</div>
 <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -228,6 +264,13 @@ function drawArrows(){
 	});
 }
 
+function lightboxes(){
+	$(".row img").click(function(){
+		$("#modalImage").attr("src", $(this).attr("src"));
+		$("#previewModal").modal();
+	});
+}
+
 $(document).ready(function(){
 	$(".row").each(function(){
 		$("> .fork", this).addClass("hidden-sm hidden-xs");
@@ -254,13 +297,27 @@ $(document).ready(function(){
 		var arrowBox = $("<div>").addClass("arrow-box visible-md visible-lg").appendTo(forks);
 	});
 	drawArrows();
-	$(".container img").click(function(){
-		$("#modalImage").attr("src", $(this).attr("src"));
-		$("#previewModal").modal();
-	});
 
 	$(window).on("resize", function(){
 		drawArrows();
+	});
+
+	$(".tooSmall").each(function(){
+		$("<button>").addClass("btn btn-large btn-default enlargeButton").text("Continue").appendTo(this).click(function(){
+			var r = $("<div>"),
+				x = $(this).parent();
+			x.clone().removeClass("tooSmall").appendTo(r);
+			x.next(".row").clone().appendTo(r).removeClass("hidden-md hidden-lg").appendTo(r);
+
+			$("#tooSmallBody").html("");
+			r.appendTo("#tooSmallBody");
+
+			$("#tooSmallModal").modal();
+			lightboxes();
+			setTimeout(drawArrows, 1000);
+		});
+		// Hide row
+		$(this).next(".row").addClass("hidden-md hidden-lg");
 	});
 });
 
